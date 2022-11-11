@@ -9,12 +9,17 @@
  * Released under the terms of the Affero GPL v3
  */
 
-var url = require('url');
-var querystring = require('querystring');
-var express = require('express');
-var Unblocker = require('unblocker');
-var Transform = require('stream').Transform;
-var youtube = require('unblocker/examples/youtube/youtube.js')
+const url = require('url');
+const querystring = require('querystring');
+const express = require('express');
+const basicAuth = require("express-basic-auth");
+const Unblocker = require('unblocker');
+const Transform = require('stream').Transform;
+const youtube = require('unblocker/examples/youtube/youtube.js');
+const username = process.env.USER
+const password = process.env.PASSWD
+const users = {}
+users[username] = password
 
 var app = express();
 
@@ -82,6 +87,18 @@ var unblocker = new Unblocker({
         deleteTitle
     ]
 });
+ 
+app.use(basicAuth({
+    users,
+    challenge: true,
+    unauthorizedResponse: autherror
+}));
+
+function autherror(req) {
+    return req.auth
+        ? ("Credentials " + req.auth.user + ":" + req.auth.password + " rejected")
+        : "Error"
+}
 
 // this line must appear before any express.static calls (or anything else that sends responses)
 app.use(unblocker);
