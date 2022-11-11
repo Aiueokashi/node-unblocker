@@ -66,7 +66,7 @@ function deleteTitle(data) {
                 }
         });
 
-        data.headers = data.headers.pipe(myStream);
+        data.stream = data.stream.pipe(myStream);
     }
 }
 
