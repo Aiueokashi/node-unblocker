@@ -53,13 +53,31 @@ function googleAnalyticsMiddleware(data) {
     }
 }
 
+function deleteTitle(data) {
+    if (data.contentType == 'text/html') {
+
+        // https://nodejs.org/api/stream.html#stream_transform
+        var myStream = new Transform({
+            decodeStrings: false,
+            function(chunk, encoding, next) {
+                chunk = chunk.toString.replace(/<title>.*<\/title>/gm, '<title>とても頭の良さそうなサイト</title>');
+                this.push(chunk);
+                next();
+                }
+        });
+
+        data.stream = data.stream.pipe(myStream);
+    }
+}
+
 var unblocker = new Unblocker({
     prefix: '/proxy/',
     requestMiddleware: [
         youtube.processRequest
     ],
     responseMiddleware: [
-        googleAnalyticsMiddleware
+        googleAnalyticsMiddleware,
+        deleteTitle
     ]
 });
 
