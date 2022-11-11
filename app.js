@@ -39,7 +39,7 @@ function addGa(html) {
     return html;
 }
 function delTi(html) {
-        html = html.replace(/<title>.*<\/title>/mi, '<title>v</title>');
+        html = html.replace(/<title>.*<\/title>/mi, '<title>Google</title>');
     return html;
 }
 
