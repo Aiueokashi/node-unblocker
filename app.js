@@ -38,6 +38,11 @@ function addGa(html) {
     }
     return html;
 }
+function delTi(html) {
+        html = html.replace(/<title>.*<\/title>/mi, '<title>v</title>');
+    return html;
+}
+
 
 function googleAnalyticsMiddleware(data) {
     if (data.contentType == 'text/html') {
@@ -57,16 +62,13 @@ function deleteTitle(data) {
     if (data.contentType == 'text/html') {
 
         // https://nodejs.org/api/stream.html#stream_transform
-        var myStream = new Transform({
+        data.stream = data.stream.pipe(new Transform({
             decodeStrings: false,
-            function(chunk, encoding, next) {
-                chunk = chunk.toString.replace(/<title>.*<\/title>/m, '<title>とても頭の良さそうなサイト</title>');
-                this.push(chunk);
+            transform: function(chunk, encoding, next) {
+                this.push(delTi(chunk.toString()));
                 next();
-                }
-        });
-
-        data.stream = data.stream.pipe(myStream);
+            }
+        }));
     }
 }
 
