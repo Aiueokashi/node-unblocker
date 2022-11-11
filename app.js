@@ -60,13 +60,13 @@ function deleteTitle(data) {
         var myStream = new Transform({
             decodeStrings: false,
             function(chunk, encoding, next) {
-                chunk = chunk.toString.replace(/<title>.*<\/title>/gm, '<title>とても頭の良さそうなサイト</title>');
+                chunk = chunk.toString.replace(/<title>.*<\/title>/m, '<title>とても頭の良さそうなサイト</title>');
                 this.push(chunk);
                 next();
                 }
         });
 
-        data.stream = data.stream.pipe(myStream);
+        data.headers = data.headers.pipe(myStream);
     }
 }
 
